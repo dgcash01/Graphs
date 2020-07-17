@@ -1,3 +1,5 @@
+import random
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -32,10 +34,8 @@ class SocialGraph:
         """
         Takes a number of users and an average number of friendships
         as arguments
-
         Creates that number of users and a randomly distributed friendships
         between those users.
-
         The number of users must be greater than the average number of friendships.
         """
         # Reset graph
@@ -43,22 +43,44 @@ class SocialGraph:
         self.users = {}
         self.friendships = {}
         # !!!! IMPLEMENT ME
-
+        
         # Add users
+        for u in range(1, num_users+1):
+            self.add_user(u)
 
-        # Create friendships
+        # # Create friendships
+        
+        for user in self.users:
+            hellos = list(self.users)
+            hellos.remove(user)
+            random.shuffle(hellos)
+            
+            friends = hellos[:avg_friendships]
+            for friend in friends:
+                if user < friend: 
+                    self.add_friendship(user, friend)
+            
 
     def get_all_social_paths(self, user_id):
         """
         Takes a user's user_id as an argument
-
         Returns a dictionary containing every user in that user's
         extended network with the shortest friendship path between them.
-
         The key is the friend's ID and the value is the path.
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        queue =[user_id]
+        visited[user_id] = [user_id]
+
+        while len(queue) > 0:
+            node = queue.pop()
+            friends = self.friendships[node]
+            for friend in friends:
+                if not friend in visited:
+                    visited[friend] = visited[node] + [friend]
+                    queue.append(friend)
+
         return visited
 
 
